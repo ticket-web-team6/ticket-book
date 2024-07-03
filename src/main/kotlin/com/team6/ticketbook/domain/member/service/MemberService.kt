@@ -1,7 +1,7 @@
 package com.team6.ticketbook.domain.member.service
 
 import com.team6.ticketbook.domain.member.dto.MemberResponse
-import com.team6.ticketbook.domain.member.dto.UpdateAddressRequest
+import com.team6.ticketbook.domain.member.dto.UpdateMemberAddressRequest
 import com.team6.ticketbook.domain.member.repository.MemberRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -18,7 +18,7 @@ class MemberService(
     }
 
     @Transactional
-    fun updateMemberAddress(memberId: Long, request: UpdateAddressRequest): MemberResponse {
+    fun updateMemberAddress(memberId: Long, request: UpdateMemberAddressRequest): MemberResponse {
         val member = memberRepository.findByIdOrNull(memberId) ?: throw RuntimeException()
         return member.apply {
             this.address = request.address

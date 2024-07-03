@@ -1,7 +1,7 @@
 package com.team6.ticketbook.domain.member.controller
 
 import com.team6.ticketbook.domain.member.dto.MemberResponse
-import com.team6.ticketbook.domain.member.dto.UpdateAddressRequest
+import com.team6.ticketbook.domain.member.dto.UpdateMemberAddressRequest
 import com.team6.ticketbook.domain.member.service.MemberService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -24,7 +24,7 @@ class MemberController(
     @PatchMapping("/{memberId}/edit-address")
     fun updateMemberAddress(
         @PathVariable memberId: Long,
-        @RequestBody request: UpdateAddressRequest
+        @RequestBody request: UpdateMemberAddressRequest
     ): ResponseEntity<MemberResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
