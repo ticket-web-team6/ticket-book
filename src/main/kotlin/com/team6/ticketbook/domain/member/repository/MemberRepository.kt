@@ -4,5 +4,5 @@ import com.team6.ticketbook.domain.member.model.Member
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface MemberRepository : JpaRepository<Member, Long> {
-
+    fun findByEmail(email: String): Member?
 }
