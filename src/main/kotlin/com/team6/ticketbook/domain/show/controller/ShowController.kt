@@ -16,33 +16,35 @@ class ShowController(
 ) {
 
     @GetMapping("/{showId}")
-    fun getShowById(@PathVariable("showId") showId: Long): ResponseEntity<ShowResponse> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(showService.getShowById(showId))
-    }
+    fun getShowById(
+        @PathVariable("showId") showId: Long
+    ): ResponseEntity<ShowResponse> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(showService.getShowById(showId))
+
 
     @PostMapping
-    fun createShow(@RequestBody request: CreateShowRequest): ResponseEntity<ShowResponse> {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(showService.createShow(request))
-    }
+    fun createShow(
+        @RequestBody request: CreateShowRequest
+    ): ResponseEntity<ShowResponse> = ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(showService.createShow(request))
+
 
     @PatchMapping("/{showId}")
     fun updateShowImage(
         @PathVariable("showId") showId: Long,
         @RequestBody request: UpdateShowImageRequest
-    ): ResponseEntity<ShowResponse> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(showService.updateShowImage(showId, request))
-    }
+    ): ResponseEntity<ShowResponse> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(showService.updateShowImage(showId, request))
+
 
     @DeleteMapping("/{showId}")
-    fun deleteShowById(@PathVariable("showId") showId: Long): ResponseEntity<Unit> {
-        return ResponseEntity
+    fun deleteShowById(
+        @PathVariable("showId") showId: Long
+    ): ResponseEntity<Unit> =
+        ResponseEntity
             .status(HttpStatus.NO_CONTENT)
             .body(showService.deleteShowById(showId))
-    }
 }

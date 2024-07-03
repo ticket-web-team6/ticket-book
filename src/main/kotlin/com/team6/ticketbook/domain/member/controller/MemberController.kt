@@ -15,26 +15,27 @@ class MemberController(
 ) {
 
     @GetMapping("/{memberId}")
-    fun getMemberById(@PathVariable memberId: Long): ResponseEntity<MemberResponse> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(memberService.getMemberById(memberId))
-    }
+    fun getMemberById(
+        @PathVariable memberId: Long
+    ): ResponseEntity<MemberResponse> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(memberService.getMemberById(memberId))
+
 
     @PatchMapping("/{memberId}/edit-address")
     fun updateMemberAddress(
         @PathVariable memberId: Long,
         @RequestBody request: UpdateMemberAddressRequest
-    ): ResponseEntity<MemberResponse> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(memberService.updateMemberAddress(memberId, request))
-    }
+    ): ResponseEntity<MemberResponse> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(memberService.updateMemberAddress(memberId, request))
+
 
     @DeleteMapping("/{memberId}")
-    fun deleteMemberById(@PathVariable memberId: Long): ResponseEntity<Unit> {
-        return ResponseEntity
-            .status(HttpStatus.NO_CONTENT)
-            .body(memberService.deleteMemberById(memberId))
-    }
+    fun deleteMemberById(
+        @PathVariable memberId: Long
+    ): ResponseEntity<Unit> = ResponseEntity
+        .status(HttpStatus.NO_CONTENT)
+        .body(memberService.deleteMemberById(memberId))
+
 }

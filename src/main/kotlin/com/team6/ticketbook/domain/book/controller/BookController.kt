@@ -15,23 +15,25 @@ class BookController(
 ) {
 
     @GetMapping("/{bookId}")
-    fun getBookById(@PathVariable bookId: Long): ResponseEntity<BookResponse> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(bookService.getBookById(bookId))
-    }
+    fun getBookById(
+        @PathVariable bookId: Long
+    ): ResponseEntity<BookResponse> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(bookService.getBookById(bookId))
+
 
     @PostMapping
-    fun createBook(@RequestBody request: CreateBookRequest): ResponseEntity<BookResponse> {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(bookService.createBook(request))
-    }
+    fun createBook(
+        @RequestBody request: CreateBookRequest
+    ): ResponseEntity<BookResponse> = ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(bookService.createBook(request))
+
 
     @DeleteMapping("/{bookId}")
-    fun deleteBookById(@PathVariable bookId: Long): ResponseEntity<Unit> {
-        return ResponseEntity
-            .status(HttpStatus.NO_CONTENT)
-            .body(bookService.deleteBookById(bookId))
-    }
+    fun deleteBookById(
+        @PathVariable bookId: Long
+    ): ResponseEntity<Unit> = ResponseEntity
+        .status(HttpStatus.NO_CONTENT)
+        .body(bookService.deleteBookById(bookId))
 }

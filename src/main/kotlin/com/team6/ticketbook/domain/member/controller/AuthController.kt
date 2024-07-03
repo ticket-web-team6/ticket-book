@@ -17,9 +17,10 @@ class AuthController(
 ) {
 
     @PostMapping("/register")
-    fun register(@RequestBody request: RegisterRequest): ResponseEntity<MemberResponse> {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(authService.register(request))
-    }
+    fun register(
+        @RequestBody request: RegisterRequest
+    ): ResponseEntity<MemberResponse> = ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(authService.register(request))
+
 }
