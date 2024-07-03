@@ -30,6 +30,4 @@ class MemberService(
         val member = memberRepository.findByIdOrNull(memberId) ?: throw RuntimeException()
         memberRepository.delete(member)
     }
-
-
 }
