@@ -4,6 +4,8 @@ import com.team6.ticketbook.domain.book.dto.BookResponse
 import com.team6.ticketbook.domain.book.dto.CreateBookRequest
 import com.team6.ticketbook.domain.book.model.Book
 import com.team6.ticketbook.domain.book.repository.BookRepository
+import com.team6.ticketbook.domain.exception.InvalidCredentialException
+import com.team6.ticketbook.domain.exception.ModelNotFoundException
 import com.team6.ticketbook.domain.show.repository.ShowRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -15,14 +17,14 @@ class BookService(
     private val showRepository: ShowRepository
 ) {
     fun getBookById(memberId: Long, bookId: Long): BookResponse {
-        val book = bookRepository.findByIdOrNull(bookId) ?: throw RuntimeException()
-        if (book.memberId != memberId) throw RuntimeException()
+        val book = bookRepository.findByIdOrNull(bookId) ?: throw ModelNotFoundException("book", bookId)
+        if (book.memberId != memberId) throw InvalidCredentialException()
         return BookResponse.from(book)
     }
 
     @Transactional
     fun createBook(memberId: Long, request: CreateBookRequest): BookResponse {
-        val show = showRepository.findByIdOrNull(request.showId) ?: throw RuntimeException()
+        val show = showRepository.findByIdOrNull(request.showId) ?: throw ModelNotFoundException("show", request.showId)
         return Book(
             show = show,
             memberId = memberId,
@@ -35,8 +37,8 @@ class BookService(
 
     @Transactional
     fun deleteBookById(memberId: Long, bookId: Long) {
-        val book = bookRepository.findByIdOrNull(bookId) ?: throw RuntimeException()
-        if (book.memberId != memberId) throw RuntimeException()
+        val book = bookRepository.findByIdOrNull(bookId) ?: throw ModelNotFoundException("book", bookId)
+        if (book.memberId != memberId) throw InvalidCredentialException()
         bookRepository.delete(book)
     }
 }

@@ -1,5 +1,7 @@
 package com.team6.ticketbook.domain.member.service
 
+import com.team6.ticketbook.domain.exception.InvalidCredentialException
+import com.team6.ticketbook.domain.exception.ModelNotFoundException
 import com.team6.ticketbook.domain.member.dto.LoginRequest
 import com.team6.ticketbook.domain.member.dto.LoginResponse
 import com.team6.ticketbook.domain.member.dto.MemberResponse
@@ -32,8 +34,15 @@ class AuthService(
     }
 
     fun login(request: LoginRequest): LoginResponse {
-        val member = memberRepository.findByEmail(request.email) ?: throw RuntimeException()
-        if (!passwordEncoder.matches(request.password, member.password)) throw RuntimeException()
+        val member = memberRepository.findByEmail(request.email) ?: throw ModelNotFoundException(
+            "member",
+            "email: ${request.email}"
+        )
+        if (!passwordEncoder.matches(
+                request.password,
+                member.password
+            )
+        ) throw InvalidCredentialException("wrong password")
         return LoginResponse(
             accessToken = jwtHelper.generateAccessToken(
                 subject = member.id.toString(),
