@@ -1,6 +1,6 @@
 package com.team6.ticketbook.infra.security.jwt
 
-import com.team6.ticketbook.infra.security.UserPrincipal
+import com.team6.ticketbook.infra.security.MemberPrincipal
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -28,7 +28,7 @@ class JwtAuthenticationFilter(
         if (jwt != null) {
             jwtHelper.validateToken(jwt)
                 .onSuccess {
-                    UserPrincipal(
+                    MemberPrincipal(
                         id = it.payload.subject.toLong(),
                         email = it.payload.get("email", String::class.java),
                         roles = setOf(it.payload.get("role", String::class.java))

@@ -14,17 +14,18 @@ class BookService(
     private val bookRepository: BookRepository,
     private val showRepository: ShowRepository
 ) {
-    fun getBookById(bookId: Long): BookResponse {
+    fun getBookById(memberId: Long, bookId: Long): BookResponse {
         val book = bookRepository.findByIdOrNull(bookId) ?: throw RuntimeException()
+        if (book.memberId != memberId) throw RuntimeException()
         return BookResponse.from(book)
     }
 
     @Transactional
-    fun createBook(request: CreateBookRequest): BookResponse {
+    fun createBook(memberId: Long, request: CreateBookRequest): BookResponse {
         val show = showRepository.findByIdOrNull(request.showId) ?: throw RuntimeException()
         return Book(
             show = show,
-            memberId = request.memberId,
+            memberId = memberId,
             seatCode = request.seatCode,
             date = request.date,
             price = request.price,
@@ -33,8 +34,9 @@ class BookService(
     }
 
     @Transactional
-    fun deleteBookById(bookId: Long) {
+    fun deleteBookById(memberId: Long, bookId: Long) {
         val book = bookRepository.findByIdOrNull(bookId) ?: throw RuntimeException()
+        if (book.memberId != memberId) throw RuntimeException()
         bookRepository.delete(book)
     }
 }

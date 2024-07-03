@@ -3,7 +3,7 @@ package com.team6.ticketbook.infra.security
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
-data class UserPrincipal(
+data class MemberPrincipal(
     val id: Long,
     val name: String,
     val authorities: Collection<GrantedAuthority>

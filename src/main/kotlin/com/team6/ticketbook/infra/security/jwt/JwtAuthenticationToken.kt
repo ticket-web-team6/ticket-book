@@ -1,12 +1,12 @@
 package com.team6.ticketbook.infra.security.jwt
 
-import com.team6.ticketbook.infra.security.UserPrincipal
+import com.team6.ticketbook.infra.security.MemberPrincipal
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.web.authentication.WebAuthenticationDetails
 import java.io.Serializable
 
 class JwtAuthenticationToken(
-    private val principal: UserPrincipal,
+    private val principal: MemberPrincipal,
     details: WebAuthenticationDetails,
 ) : AbstractAuthenticationToken(principal.authorities), Serializable {
     init {

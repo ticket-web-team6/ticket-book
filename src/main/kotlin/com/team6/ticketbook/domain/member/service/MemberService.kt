@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 class MemberService(
     private val memberRepository: MemberRepository
 ) {
-    fun getMemberById(memberId: Long): MemberResponse {
+    fun getProfile(memberId: Long): MemberResponse {
         val member = memberRepository.findByIdOrNull(memberId) ?: throw RuntimeException()
         return MemberResponse.from(member)
     }

@@ -6,6 +6,7 @@ import com.team6.ticketbook.domain.show.dto.UpdateShowImageRequest
 import com.team6.ticketbook.domain.show.service.ShowService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 
@@ -22,7 +23,7 @@ class ShowController(
         .status(HttpStatus.OK)
         .body(showService.getShowById(showId))
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     fun createShow(
         @RequestBody request: CreateShowRequest
@@ -30,7 +31,7 @@ class ShowController(
         .status(HttpStatus.CREATED)
         .body(showService.createShow(request))
 
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PatchMapping("/{showId}")
     fun updateShowImage(
         @PathVariable("showId") showId: Long,
@@ -39,7 +40,7 @@ class ShowController(
         .status(HttpStatus.OK)
         .body(showService.updateShowImage(showId, request))
 
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping("/{showId}")
     fun deleteShowById(
         @PathVariable("showId") showId: Long
