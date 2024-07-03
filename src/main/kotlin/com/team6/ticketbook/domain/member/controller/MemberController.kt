@@ -3,8 +3,10 @@ package com.team6.ticketbook.domain.member.controller
 import com.team6.ticketbook.domain.member.dto.MemberResponse
 import com.team6.ticketbook.domain.member.dto.UpdateMemberAddressRequest
 import com.team6.ticketbook.domain.member.service.MemberService
+import com.team6.ticketbook.infra.security.MemberPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 
@@ -14,28 +16,28 @@ class MemberController(
     private val memberService: MemberService
 ) {
 
-    @GetMapping("/{memberId}")
-    fun getMemberById(
-        @PathVariable memberId: Long
+    @GetMapping("/profile")
+    fun getProfile(
+        @AuthenticationPrincipal member: MemberPrincipal
     ): ResponseEntity<MemberResponse> = ResponseEntity
         .status(HttpStatus.OK)
-        .body(memberService.getMemberById(memberId))
+        .body(memberService.getProfile(member.id))
 
 
-    @PatchMapping("/{memberId}/edit-address")
+    @PatchMapping("/edit-address")
     fun updateMemberAddress(
-        @PathVariable memberId: Long,
-        @RequestBody request: UpdateMemberAddressRequest
+        @RequestBody request: UpdateMemberAddressRequest,
+        @AuthenticationPrincipal member: MemberPrincipal
     ): ResponseEntity<MemberResponse> = ResponseEntity
         .status(HttpStatus.OK)
-        .body(memberService.updateMemberAddress(memberId, request))
+        .body(memberService.updateMemberAddress(member.id, request))
 
 
-    @DeleteMapping("/{memberId}")
+    @DeleteMapping
     fun deleteMemberById(
-        @PathVariable memberId: Long
+        @AuthenticationPrincipal member: MemberPrincipal
     ): ResponseEntity<Unit> = ResponseEntity
         .status(HttpStatus.NO_CONTENT)
-        .body(memberService.deleteMemberById(memberId))
+        .body(memberService.deleteMemberById(member.id))
 
 }
