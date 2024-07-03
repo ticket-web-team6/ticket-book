@@ -31,7 +31,7 @@ class Show(
     @Column(name = "end_date")
     val endDate: LocalDate,
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "start_time")
     val startTime: ShowStartTime,
 

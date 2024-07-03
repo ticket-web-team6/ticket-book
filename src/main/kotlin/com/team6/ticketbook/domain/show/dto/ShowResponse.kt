@@ -6,7 +6,7 @@ import java.time.LocalDate
 data class ShowResponse(
     val id: Long,
     val title: String,
-    val startTime: Int,
+    val startTime: String,
     val vipPrice: Int,
     val rPrice: Int,
     val sPrice: Int,
@@ -22,7 +22,7 @@ data class ShowResponse(
             return ShowResponse(
                 id = show.id!!,
                 title = show.title,
-                startTime = show.startTime.ordinal,
+                startTime = show.startTime.name,
                 vipPrice = show.vipPrice,
                 rPrice = show.rPrice,
                 sPrice = show.sPrice,
