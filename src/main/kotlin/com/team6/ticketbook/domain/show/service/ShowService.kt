@@ -33,7 +33,7 @@ class ShowService(
             info = request.info,
             category = request.category,
         )
-        // Todo : Seat 생성 로직 구현 필요 
+        // Todo : Seat 생성 로직 구현 필요
         return showRepository.save(show)
             .let { ShowResponse.from(show) }
     }
