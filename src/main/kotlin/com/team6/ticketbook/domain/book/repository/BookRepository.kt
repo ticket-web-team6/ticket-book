@@ -51,7 +51,7 @@ class BookQueryDslRepositoryImpl(
             )
             .from(seat)
             .leftJoin(book)
-            .on(seat.id.eq(book.seatId).and(book.date.eq(date)))
+            .on(seat.id.eq(book.seat().id).and(book.date.eq(date)))
             .where(
                 placeEq(placeId)
             )
@@ -60,7 +60,7 @@ class BookQueryDslRepositoryImpl(
 
         return seatList
     }
-    
+
 
     private fun placeEq(placeId: Long): BooleanExpression? {
         return seat.placeId.eq(placeId)

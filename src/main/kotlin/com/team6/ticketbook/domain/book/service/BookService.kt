@@ -41,8 +41,8 @@ class BookService(
         ) throw SeatAlreadyTakenException()
         return Book(
             show = show,
-            memberId = request.memberId,
-            seatId = seat.id!!,
+            memberId = memberId,
+            seat = seat,
             date = request.date,
             price = price,
         ).let { bookRepository.save(it) }

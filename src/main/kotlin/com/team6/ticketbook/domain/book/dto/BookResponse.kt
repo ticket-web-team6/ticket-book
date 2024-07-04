@@ -1,14 +1,14 @@
 package com.team6.ticketbook.domain.book.dto
 
 import com.team6.ticketbook.domain.book.model.Book
-import com.team6.ticketbook.domain.show.dto.ShowResponse
+import com.team6.ticketbook.domain.show.dto.ShowResponseWithBook
 import java.time.LocalDate
 
 data class BookResponse(
     val id: Long,
-    val show: ShowResponse,
+    val show: ShowResponseWithBook,
     val memberId: Long,
-    val seatId: Long,
+    val seatCode: String,
     val date: LocalDate,
     val price: Int
 ) {
@@ -16,9 +16,9 @@ data class BookResponse(
         fun from(book: Book): BookResponse {
             return BookResponse(
                 id = book.id!!,
-                show = ShowResponse.from(book.show),
+                show = ShowResponseWithBook.from(book.show),
                 memberId = book.memberId,
-                seatId = book.seatId,
+                seatCode = "${book.seat.seatCode} : ${book.seat.grade}",
                 date = book.date,
                 price = book.price
             )

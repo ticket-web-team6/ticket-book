@@ -1,5 +1,6 @@
 package com.team6.ticketbook.domain.book.model
 
+import com.team6.ticketbook.domain.seat.model.Seat
 import com.team6.ticketbook.domain.show.model.Show
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -19,8 +20,9 @@ class Book(
     @Column(name = "member_id")
     val memberId: Long,
 
-    @Column(name = "seat_id")
-    val seatId: Long,
+    @ManyToOne
+    @JoinColumn(name = "seat_id")
+    val seat: Seat,
 
     @Column(name = "date")
     val date: LocalDate,
