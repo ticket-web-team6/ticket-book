@@ -1,5 +1,7 @@
 package com.team6.ticketbook.domain.member.controller
 
+import com.team6.ticketbook.domain.member.dto.LoginRequest
+import com.team6.ticketbook.domain.member.dto.LoginResponse
 import com.team6.ticketbook.domain.member.dto.MemberResponse
 import com.team6.ticketbook.domain.member.dto.RegisterRequest
 import com.team6.ticketbook.domain.member.service.AuthService
@@ -15,6 +17,14 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     val authService: AuthService,
 ) {
+    @PostMapping("/login")
+    fun login(
+        @RequestBody request: LoginRequest
+    ): ResponseEntity<LoginResponse> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(authService.login(request))
+    }
 
     @PostMapping("/register")
     fun register(
