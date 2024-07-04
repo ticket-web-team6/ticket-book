@@ -3,6 +3,7 @@ package com.team6.ticketbook.domain.show.service
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
+import com.team6.ticketbook.domain.book.exception.InvalidDateException
 import com.team6.ticketbook.domain.book.repository.BookRepository
 import com.team6.ticketbook.domain.exception.ModelNotFoundException
 import com.team6.ticketbook.domain.place.repository.PlaceRepository
@@ -70,6 +71,7 @@ class ShowService(
 
     fun getAvailableSeats(showId: Long, date: LocalDate): List<SeatResponse>? {
         val show = showRepository.findByIdOrNull(showId) ?: throw ModelNotFoundException("show", showId)
+        if (show.startDate > date || show.endDate < date) throw InvalidDateException()
         return bookRepository.findAllSeatsWithAvailability(date, show.place.id!!)
     }
 

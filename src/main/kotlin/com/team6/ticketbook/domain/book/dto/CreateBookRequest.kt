@@ -7,5 +7,4 @@ data class CreateBookRequest(
     val memberId: Long,
     val seatId: Long,
     val date: LocalDate,
-    val price: Int,
 )

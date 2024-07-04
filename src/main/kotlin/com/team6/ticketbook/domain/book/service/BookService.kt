@@ -9,6 +9,7 @@ import com.team6.ticketbook.domain.book.repository.BookRepository
 import com.team6.ticketbook.domain.exception.InvalidCredentialException
 import com.team6.ticketbook.domain.exception.ModelNotFoundException
 import com.team6.ticketbook.domain.seat.repository.SeatRepository
+import com.team6.ticketbook.domain.show.model.Show
 import com.team6.ticketbook.domain.show.repository.ShowRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -31,7 +32,7 @@ class BookService(
         val show = showRepository.findByIdOrNull(request.showId) ?: throw ModelNotFoundException("show", request.showId)
         if (show.startDate > request.date || show.endDate < request.date) throw InvalidDateException()
         val seat = seatRepository.findByIdOrNull(request.seatId) ?: throw ModelNotFoundException("seat", request.seatId)
-
+        val price = calculatePrice(seat.grade, show)
         if (bookRepository.existsByShowIdAndDateAndSeatId(
                 showId = request.showId,
                 date = request.date,
@@ -41,9 +42,9 @@ class BookService(
         return Book(
             show = show,
             memberId = request.memberId,
-            seat = seat,
+            seatId = seat.id!!,
             date = request.date,
-            price = request.price,
+            price = price,
         ).let { bookRepository.save(it) }
             .let { BookResponse.from(it) }
     }
@@ -53,6 +54,16 @@ class BookService(
         val book = bookRepository.findByIdOrNull(bookId) ?: throw ModelNotFoundException("book", bookId)
         if (book.memberId != memberId) throw InvalidCredentialException()
         bookRepository.delete(book)
+    }
+
+    private fun calculatePrice(grade: String, show: Show): Int {
+        return when (grade) {
+            "VIP" -> show.vipPrice
+            "R" -> show.rPrice
+            "S" -> show.sPrice
+            "A" -> show.aPrice
+            else -> throw RuntimeException()
+        }
     }
 
 }

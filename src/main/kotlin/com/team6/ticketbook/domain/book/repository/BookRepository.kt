@@ -44,16 +44,15 @@ class BookQueryDslRepositoryImpl(
                     seat.grade,
                     CaseBuilder()
                         .`when`(book.id.isNull)
-                        .then(true)
-                        .otherwise(false)
+                        .then(false)
+                        .otherwise(true)
                         .`as`("isTaken")
                 )
             )
             .from(seat)
             .leftJoin(book)
-            .on(seat.id.eq(book.seat.id))
+            .on(seat.id.eq(book.seatId).and(book.date.eq(date)))
             .where(
-                dateEq(date),
                 placeEq(placeId)
             )
             .orderBy(seat.seatCode.asc())
@@ -61,10 +60,7 @@ class BookQueryDslRepositoryImpl(
 
         return seatList
     }
-
-    private fun dateEq(date: LocalDate): BooleanExpression? {
-        return book.date.eq(date)
-    }
+    
 
     private fun placeEq(placeId: Long): BooleanExpression? {
         return seat.placeId.eq(placeId)

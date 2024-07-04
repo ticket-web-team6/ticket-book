@@ -8,7 +8,7 @@ data class BookResponse(
     val id: Long,
     val show: ShowResponse,
     val memberId: Long,
-    val seatCode: String,
+    val seatId: Long,
     val date: LocalDate,
     val price: Int
 ) {
@@ -18,7 +18,7 @@ data class BookResponse(
                 id = book.id!!,
                 show = ShowResponse.from(book.show),
                 memberId = book.memberId,
-                seatCode = book.seat.seatCode,
+                seatId = book.seatId,
                 date = book.date,
                 price = book.price
             )
