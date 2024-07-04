@@ -26,6 +26,8 @@ class SecurityConfig(
                 it.requestMatchers(
                     "/auth/login",
                     "/auth/register",
+                    "/shows/all",
+                    "/shows/search"
                 )
                     .permitAll()
                     .anyRequest().authenticated()
