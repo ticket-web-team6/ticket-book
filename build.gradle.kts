@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.9.23"
     kotlin("plugin.spring") version "1.9.23"
     kotlin("plugin.jpa") version "1.9.23"
+    kotlin("kapt") version "2.0.0"
 }
 
 group = "com.team6"
@@ -27,6 +28,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.mysql:mysql-connector-j")
     implementation("io.jsonwebtoken:jjwt:0.12.3")
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
@@ -52,3 +56,8 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+kapt {
+    arguments {
+        arg("querydsl.entityAccessors", "true")
+    }
+}
