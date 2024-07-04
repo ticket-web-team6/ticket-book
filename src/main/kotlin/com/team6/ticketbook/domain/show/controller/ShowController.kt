@@ -1,5 +1,6 @@
 package com.team6.ticketbook.domain.show.controller
 
+import com.team6.ticketbook.domain.seat.dto.SeatResponse
 import com.team6.ticketbook.domain.show.dto.CreateShowRequest
 import com.team6.ticketbook.domain.show.dto.ShowResponse
 import com.team6.ticketbook.domain.show.dto.UpdateShowImageRequest
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 
 @RestController
@@ -22,6 +24,15 @@ class ShowController(
     ): ResponseEntity<ShowResponse> = ResponseEntity
         .status(HttpStatus.OK)
         .body(showService.getShowById(showId))
+
+    @GetMapping("/{showId}/check-seats")
+    fun getAvailableSeats(
+        @PathVariable showId: Long,
+        @RequestParam(name = "date") date: LocalDate
+    ): ResponseEntity<List<SeatResponse>> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(showService.getAvailableSeats(showId, date))
+
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
