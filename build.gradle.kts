@@ -58,3 +58,8 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+kapt {
+    arguments {
+        arg("querydsl.entityAccessors", "true")
+    }
+}

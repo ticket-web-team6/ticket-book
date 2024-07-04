@@ -1,5 +1,8 @@
 package com.team6.ticketbook.domain.show.service
 
+import com.querydsl.core.types.dsl.BooleanExpression
+import com.querydsl.core.types.dsl.Expressions
+import com.querydsl.jpa.impl.JPAQueryFactory
 import com.team6.ticketbook.domain.book.repository.BookRepository
 import com.team6.ticketbook.domain.exception.ModelNotFoundException
 import com.team6.ticketbook.domain.place.repository.PlaceRepository
@@ -7,9 +10,14 @@ import com.team6.ticketbook.domain.seat.dto.SeatResponse
 import com.team6.ticketbook.domain.show.dto.CreateShowRequest
 import com.team6.ticketbook.domain.show.dto.ShowResponse
 import com.team6.ticketbook.domain.show.dto.UpdateShowImageRequest
+import com.team6.ticketbook.domain.show.model.QShow
 import com.team6.ticketbook.domain.show.model.Show
 import com.team6.ticketbook.domain.show.repository.ShowRepository
+import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -17,6 +25,7 @@ import java.time.LocalDate
 @Service
 class ShowService(
     private val showRepository: ShowRepository,
+    private val entityManager: EntityManager,
     private val bookRepository: BookRepository,
     private val placeRepository: PlaceRepository
 ) {
@@ -65,5 +74,45 @@ class ShowService(
         return bookRepository.findAllSeatsWithAvailability(date, show.place.id!!)
     }
 
+    fun getAllShows(page: Int, size: Int): Page<ShowResponse> {
+        val queryFactory = JPAQueryFactory(entityManager)
+        val show = QShow.show
+        val pageable = PageRequest.of(page, size)
 
+        val query = queryFactory
+            .selectFrom(show)
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+
+        val results = query.fetch()
+        val total = query.fetchCount()
+        val shows = results.map { ShowResponse.from(it) }
+
+        return PageImpl(shows, pageable, total)
+    }
+
+    fun searchShowsByName(title: String, page: Int, size: Int): Page<ShowResponse> {
+        val queryFactory = JPAQueryFactory(entityManager)
+        val show = QShow.show
+        val pageable = PageRequest.of(page, size)
+
+        val predicate: BooleanExpression = if (title.isNotEmpty()) {
+            show.title.containsIgnoreCase(title)
+        } else {
+            Expressions.asBoolean(true).isTrue
+        }
+
+        val query = queryFactory
+            .selectFrom(show)
+            .where(predicate)
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+
+        val results = query.fetch()
+        val shows = results.map { ShowResponse.from(it) }
+
+        val total = queryFactory.selectFrom(show).where(predicate).fetchCount()
+
+        return PageImpl(shows, pageable, total)
+    }
 }
