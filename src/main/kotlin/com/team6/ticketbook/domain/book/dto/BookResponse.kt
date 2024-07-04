@@ -18,7 +18,7 @@ data class BookResponse(
                 id = book.id!!,
                 show = ShowResponse.from(book.show),
                 memberId = book.memberId,
-                seatCode = book.seatCode,
+                seatCode = book.seat.seatCode,
                 date = book.date,
                 price = book.price
             )

@@ -1,5 +1,6 @@
 package com.team6.ticketbook.domain.exception
 
+import com.team6.ticketbook.domain.book.exception.SeatAlreadyTakenException
 import com.team6.ticketbook.domain.exception.dto.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -29,5 +30,10 @@ class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCredentialException::class)
     fun handleInvalidCredentialException(e: InvalidCredentialException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(SeatAlreadyTakenException::class)
+    fun handleSeatAlreadyTakenException(e: SeatAlreadyTakenException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse(e.message))
     }
 }
