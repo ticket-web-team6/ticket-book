@@ -52,7 +52,6 @@ class ShowService(
             category = request.category,
             place = place
         )
-
         return showRepository.save(show)
             .let { ShowResponse.from(show) }
     }

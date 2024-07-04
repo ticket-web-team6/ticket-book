@@ -1,5 +1,6 @@
 package com.team6.ticketbook.domain.exception
 
+import com.team6.ticketbook.domain.book.exception.InvalidDateException
 import com.team6.ticketbook.domain.book.exception.SeatAlreadyTakenException
 import com.team6.ticketbook.domain.exception.dto.ErrorResponse
 import org.springframework.http.HttpStatus
@@ -35,5 +36,10 @@ class GlobalExceptionHandler {
     @ExceptionHandler(SeatAlreadyTakenException::class)
     fun handleSeatAlreadyTakenException(e: SeatAlreadyTakenException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(InvalidDateException::class)
+    fun handleInvalidDateException(e: InvalidDateException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse(e.message))
     }
 }

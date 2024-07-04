@@ -2,6 +2,7 @@ package com.team6.ticketbook.domain.book.service
 
 import com.team6.ticketbook.domain.book.dto.BookResponse
 import com.team6.ticketbook.domain.book.dto.CreateBookRequest
+import com.team6.ticketbook.domain.book.exception.InvalidDateException
 import com.team6.ticketbook.domain.book.exception.SeatAlreadyTakenException
 import com.team6.ticketbook.domain.book.model.Book
 import com.team6.ticketbook.domain.book.repository.BookRepository
@@ -28,7 +29,9 @@ class BookService(
     @Transactional
     fun createBook(memberId: Long, request: CreateBookRequest): BookResponse {
         val show = showRepository.findByIdOrNull(request.showId) ?: throw ModelNotFoundException("show", request.showId)
+        if (show.startDate > request.date || show.endDate < request.date) throw InvalidDateException()
         val seat = seatRepository.findByIdOrNull(request.seatId) ?: throw ModelNotFoundException("seat", request.seatId)
+
         if (bookRepository.existsByShowIdAndDateAndSeatId(
                 showId = request.showId,
                 date = request.date,
