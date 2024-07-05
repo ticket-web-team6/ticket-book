@@ -1,5 +1,6 @@
 package com.team6.ticketbook.domain.show.model
 
+import com.team6.ticketbook.domain.place.model.Place
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -9,6 +10,10 @@ class Show(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "place_id")
+    val place: Place,
 
     @Column(name = "title")
     val title: String,

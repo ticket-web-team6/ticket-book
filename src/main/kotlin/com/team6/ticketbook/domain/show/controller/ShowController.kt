@@ -1,14 +1,19 @@
 package com.team6.ticketbook.domain.show.controller
 
+import com.team6.ticketbook.domain.seat.dto.SeatResponse
 import com.team6.ticketbook.domain.show.dto.CreateShowRequest
 import com.team6.ticketbook.domain.show.dto.ShowResponse
+import com.team6.ticketbook.domain.show.dto.ShowSearchFilter
 import com.team6.ticketbook.domain.show.dto.UpdateShowImageRequest
 import com.team6.ticketbook.domain.show.service.ShowService
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 
 @RestController
@@ -24,6 +29,16 @@ class ShowController(
         .status(HttpStatus.OK)
         .body(showService.getShowById(showId))
 
+
+    @GetMapping("/{showId}/check-seats")
+    fun getAvailableSeats(
+        @PathVariable showId: Long,
+        @RequestParam(name = "date") date: LocalDate
+    ): ResponseEntity<List<SeatResponse>> = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(showService.getAvailableSeats(showId, date))
+
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     fun createShow(
@@ -31,6 +46,7 @@ class ShowController(
     ): ResponseEntity<ShowResponse> = ResponseEntity
         .status(HttpStatus.CREATED)
         .body(showService.createShow(request))
+
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PatchMapping("/{showId}")
@@ -41,6 +57,7 @@ class ShowController(
         .status(HttpStatus.OK)
         .body(showService.updateShowImage(showId, request))
 
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping("/{showId}")
     fun deleteShowById(
@@ -49,20 +66,20 @@ class ShowController(
         .status(HttpStatus.NO_CONTENT)
         .body(showService.deleteShowById(showId))
 
+
     @GetMapping("/all")
     fun getAllShows(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "5") size: Int,
+        @PageableDefault(size = 10, page = 0) pageable: Pageable,
     ): ResponseEntity<Page<ShowResponse>> = ResponseEntity
         .status(HttpStatus.OK)
-        .body(showService.getAllShows(page, size))
+        .body(showService.getAllShows(pageable))
+
 
     @GetMapping("/search")
-    fun searchShowsByName(
-        @RequestParam(defaultValue = "") title: String,
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "5") size: Int,
+    fun searchShowsByFilter(
+        filter: ShowSearchFilter,
+        @PageableDefault(size = 10, page = 0) pageable: Pageable,
     ): ResponseEntity<Page<ShowResponse>> = ResponseEntity
         .status(HttpStatus.OK)
-        .body(showService.searchShowsByName(title, page, size))
+        .body(showService.searchShowsByFilter(filter, pageable))
 }

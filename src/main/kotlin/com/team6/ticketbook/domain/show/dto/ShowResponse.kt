@@ -1,5 +1,6 @@
 package com.team6.ticketbook.domain.show.dto
 
+import com.team6.ticketbook.domain.place.dto.PlaceResponse
 import com.team6.ticketbook.domain.show.model.Show
 import java.time.LocalDate
 
@@ -16,6 +17,7 @@ data class ShowResponse(
     val mainImageUrl: String,
     val info: String,
     val category: String,
+    val place: PlaceResponse
 ) {
     companion object {
         fun from(show: Show): ShowResponse {
@@ -32,6 +34,28 @@ data class ShowResponse(
                 mainImageUrl = show.mainImageUrl,
                 info = show.info,
                 category = show.category,
+                place = PlaceResponse.from(show.place)
+            )
+        }
+    }
+}
+
+data class ShowResponseWithBook(
+    val title: String,
+    val startTime: String,
+    val mainImageUrl: String,
+    val category: String,
+    val place: PlaceResponse
+) {
+    companion object {
+        fun from(show: Show): ShowResponseWithBook {
+            return ShowResponseWithBook(
+                title = show.title,
+                startTime = show.startTime.name,
+                mainImageUrl = show.mainImageUrl,
+                category = show.category,
+                place = PlaceResponse.from(show.place)
+
             )
         }
     }

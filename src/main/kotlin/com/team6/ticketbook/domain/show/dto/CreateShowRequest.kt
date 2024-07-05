@@ -15,4 +15,5 @@ data class CreateShowRequest(
     val mainImageUrl: String,
     val info: String,
     val category: String,
+    val placeId: Long,
 )
