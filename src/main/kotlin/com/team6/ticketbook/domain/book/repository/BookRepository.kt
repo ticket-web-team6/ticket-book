@@ -15,6 +15,7 @@ import java.time.LocalDate
 @Repository
 interface BookRepository : JpaRepository<Book, Long>, BookQueryDslRepository {
     fun existsByShowIdAndDateAndSeatId(showId: Long, date: LocalDate, seatId: Long): Boolean
+    fun findAllByShowIdAndDateAndSeatId(showId: Long, date: LocalDate, seatId: Long): List<Book>
 }
 
 interface BookQueryDslRepository {
