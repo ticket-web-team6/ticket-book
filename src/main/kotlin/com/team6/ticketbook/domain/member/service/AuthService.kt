@@ -1,5 +1,6 @@
 package com.team6.ticketbook.domain.member.service
 
+import com.team6.ticketbook.domain.member.exception.EmailAlreadyOccupiedException
 import com.team6.ticketbook.domain.exception.InvalidCredentialException
 import com.team6.ticketbook.domain.exception.ModelNotFoundException
 import com.team6.ticketbook.domain.member.dto.LoginRequest
@@ -23,6 +24,9 @@ class AuthService(
 
     @Transactional
     fun register(request: RegisterRequest): MemberResponse {
+        if (memberRepository.findByEmail(request.email) != null)
+            throw EmailAlreadyOccupiedException()
+
         return Member(
             email = request.email,
             password = passwordEncoder.encode(request.password),
