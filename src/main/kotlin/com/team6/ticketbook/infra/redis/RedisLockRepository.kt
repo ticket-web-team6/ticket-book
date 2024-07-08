@@ -7,14 +7,14 @@ import java.time.Duration
 @Component
 class RedisLockRepository (
 
-    private val redisTemplate: RedisTemplate<String, Boolean>
+    private val redisTemplate: RedisTemplate<String, String>
 ) {
 
     private final val timeToLiveMilliseconds = 100L
 
     fun lock(key: String): Boolean =
         redisTemplate.opsForValue()
-            .setIfAbsent(key, true, Duration.ofMillis(timeToLiveMilliseconds))
+            .setIfAbsent(key, "lock", Duration.ofMillis(timeToLiveMilliseconds))
             ?: false
 
     fun unlock(key: String): Boolean =
