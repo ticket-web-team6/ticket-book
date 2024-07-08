@@ -51,6 +51,7 @@ class BookService(
             .let { BookResponse.from(it) }
     }
 
+    @Transactional
     fun createBookWithRedisLock(memberId: Long, request: CreateBookRequest): BookResponse {
 
         return "lock:${request.showId}-${request.date}-${request.seatId}".let { key ->
