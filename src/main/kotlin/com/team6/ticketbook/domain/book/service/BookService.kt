@@ -11,6 +11,7 @@ import com.team6.ticketbook.domain.exception.ModelNotFoundException
 import com.team6.ticketbook.domain.seat.repository.SeatRepository
 import com.team6.ticketbook.domain.show.model.Show
 import com.team6.ticketbook.domain.show.repository.ShowRepository
+import com.team6.ticketbook.infra.redis.RedisLockRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Service
 class BookService(
     private val bookRepository: BookRepository,
     private val showRepository: ShowRepository,
-    private val seatRepository: SeatRepository
+    private val seatRepository: SeatRepository,
+    private val redisLockRepository: RedisLockRepository
 ) {
     fun getBookById(memberId: Long, bookId: Long): BookResponse {
         val book = bookRepository.findByIdOrNull(bookId) ?: throw ModelNotFoundException("book", bookId)
@@ -47,6 +49,21 @@ class BookService(
             price = price,
         ).let { bookRepository.save(it) }
             .let { BookResponse.from(it) }
+    }
+
+    fun createBookWithRedisLock(memberId: Long, request: CreateBookRequest): BookResponse {
+
+        return "lock:${request.showId}-${request.date}-${request.seatId}".let { key ->
+
+            while (!redisLockRepository.lock(key))
+                Thread.sleep(10)
+
+            val result = createBook(memberId, request)
+
+            redisLockRepository.unlock(key)
+
+            result
+        }
     }
 
     @Transactional

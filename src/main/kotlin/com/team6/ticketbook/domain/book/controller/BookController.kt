@@ -25,13 +25,21 @@ class BookController(
         .body(bookService.getBookById(member.id, bookId))
 
 
-    @PostMapping
+    @PostMapping("/v1")
     fun createBook(
         @RequestBody request: CreateBookRequest,
         @AuthenticationPrincipal member: MemberPrincipal
     ): ResponseEntity<BookResponse> = ResponseEntity
         .status(HttpStatus.CREATED)
         .body(bookService.createBook(member.id, request))
+
+    @PostMapping("/v2")
+    fun createBookWithRedisLock(
+        @RequestBody request: CreateBookRequest,
+        @AuthenticationPrincipal member: MemberPrincipal
+    ): ResponseEntity<BookResponse> = ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(bookService.createBookWithRedisLock(member.id, request))
 
 
     @DeleteMapping("/{bookId}")
