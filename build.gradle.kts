@@ -29,6 +29,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("com.mysql:mysql-connector-j")
     implementation("io.jsonwebtoken:jjwt:0.12.3")
     implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
