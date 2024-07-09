@@ -33,6 +33,14 @@ class BookController(
         .status(HttpStatus.CREATED)
         .body(bookService.createBook(member.id, request))
 
+    @PostMapping("/v2")
+    fun createBookWithRedisLock(
+        @RequestBody request: CreateBookRequest,
+        @AuthenticationPrincipal member: MemberPrincipal
+    ): ResponseEntity<BookResponse> = ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(bookService.createBookWithRedisLock(member.id, request))
+
     @PostMapping("/v3")
     fun createBookWithMySqlLock(
         @RequestBody request: CreateBookRequest,
