@@ -8,18 +8,20 @@ import com.team6.ticketbook.domain.book.model.Book
 import com.team6.ticketbook.domain.book.repository.BookRepository
 import com.team6.ticketbook.domain.exception.InvalidCredentialException
 import com.team6.ticketbook.domain.exception.ModelNotFoundException
+import com.team6.ticketbook.domain.lock.service.LockService
 import com.team6.ticketbook.domain.seat.repository.SeatRepository
 import com.team6.ticketbook.domain.show.model.Show
 import com.team6.ticketbook.domain.show.repository.ShowRepository
-import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BookService(
     private val bookRepository: BookRepository,
     private val showRepository: ShowRepository,
-    private val seatRepository: SeatRepository
+    private val seatRepository: SeatRepository,
+    private val lockService: LockService,
 ) {
     fun getBookById(memberId: Long, bookId: Long): BookResponse {
         val book = bookRepository.findByIdOrNull(bookId) ?: throw ModelNotFoundException("book", bookId)
@@ -66,4 +68,12 @@ class BookService(
         }
     }
 
+    @Transactional
+    fun createBookWithMySqlLock(memberId: Long, request: CreateBookRequest): BookResponse {
+        "${request.showId}-${request.seatId}-${request.date}".let {
+            lockService.lock(it)
+        }
+        val bookResponse = createBook(memberId, request)
+        return bookResponse
+    }
 }
