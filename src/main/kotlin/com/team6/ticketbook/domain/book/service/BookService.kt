@@ -8,20 +8,20 @@ import com.team6.ticketbook.domain.book.model.Book
 import com.team6.ticketbook.domain.book.repository.BookRepository
 import com.team6.ticketbook.domain.exception.InvalidCredentialException
 import com.team6.ticketbook.domain.exception.ModelNotFoundException
+import com.team6.ticketbook.domain.lock.service.LockService
 import com.team6.ticketbook.domain.seat.repository.SeatRepository
 import com.team6.ticketbook.domain.show.model.Show
 import com.team6.ticketbook.domain.show.repository.ShowRepository
-import com.team6.ticketbook.infra.redis.RedisLock
-import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BookService(
     private val bookRepository: BookRepository,
     private val showRepository: ShowRepository,
     private val seatRepository: SeatRepository,
-    private val redisLock: RedisLock
+    private val lockService: LockService,
 ) {
     fun getBookById(memberId: Long, bookId: Long): BookResponse {
         val book = bookRepository.findByIdOrNull(bookId) ?: throw ModelNotFoundException("book", bookId)
@@ -53,11 +53,20 @@ class BookService(
 
     @Transactional
     fun createBookWithRedisLock(memberId: Long, request: CreateBookRequest): BookResponse =
-        "lock:${request.showId}-${request.date}-${request.seatId}".let { key ->
-            redisLock.runExclusive(key) {
+        createLockKeyWithBookRequest(request).let { key ->
+            lockService.runExclusive(key) {
                 createBook(memberId, request)
             }
         }
+
+    @Transactional
+    fun createBookWithJpaLock(memberId: Long, request: CreateBookRequest): BookResponse {
+        createLockKeyWithBookRequest(request).let {
+            lockService.jpaLock(it)
+        }
+        val bookResponse = createBook(memberId, request)
+        return bookResponse
+    }
 
     @Transactional
     fun deleteBookById(memberId: Long, bookId: Long) {
@@ -74,6 +83,10 @@ class BookService(
             "A" -> show.aPrice
             else -> throw RuntimeException()
         }
+    }
+
+    private fun createLockKeyWithBookRequest(request: CreateBookRequest): String {
+        return "${request.showId}-${request.date}-${request.seatId}"
     }
 
 }
