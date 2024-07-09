@@ -47,7 +47,7 @@ class BookController(
         @AuthenticationPrincipal member: MemberPrincipal
     ): ResponseEntity<BookResponse> = ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(bookService.createBookWithMySqlLock(member.id, request))
+        .body(bookService.createBookWithJpaLock(member.id, request))
 
     @DeleteMapping("/{bookId}")
     fun deleteBookById(
