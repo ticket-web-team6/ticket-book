@@ -25,6 +25,10 @@ class LockService(
         }
     }
 
+    fun deleteLock(lock: LockData) {
+        lockRepository.delete(lock)
+    }
+
     fun redisLock(key: String): Boolean {
         println("Acquired Lock")
         return redisTemplate.opsForValue()
