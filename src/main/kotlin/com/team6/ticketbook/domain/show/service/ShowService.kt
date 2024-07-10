@@ -62,11 +62,6 @@ class ShowService(
             .map { ShowResponse.from(it) }
     }
 
-    fun searchShowsByFilter(filter: ShowSearchFilter, pageable: Pageable): Page<ShowResponse> {
-        return showRepository.findByFilterPaginated(filter, pageable)
-            .map { ShowResponse.from(it) }
-    }
-
     private fun createShowFromRequestAndPlace(request: CreateShowRequest, place: Place): Show {
         return Show(
             title = request.title,

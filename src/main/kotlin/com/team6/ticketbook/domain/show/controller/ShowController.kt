@@ -3,7 +3,6 @@ package com.team6.ticketbook.domain.show.controller
 import com.team6.ticketbook.domain.seat.dto.SeatResponse
 import com.team6.ticketbook.domain.show.dto.CreateShowRequest
 import com.team6.ticketbook.domain.show.dto.ShowResponse
-import com.team6.ticketbook.domain.show.dto.ShowSearchFilter
 import com.team6.ticketbook.domain.show.dto.UpdateShowImageRequest
 import com.team6.ticketbook.domain.show.service.ShowService
 import org.springframework.data.domain.Page
@@ -74,12 +73,4 @@ class ShowController(
         .status(HttpStatus.OK)
         .body(showService.getAllShows(pageable))
 
-
-    @GetMapping("/search")
-    fun searchShowsByFilter(
-        filter: ShowSearchFilter,
-        @PageableDefault(size = 10, page = 0) pageable: Pageable,
-    ): ResponseEntity<Page<ShowResponse>> = ResponseEntity
-        .status(HttpStatus.OK)
-        .body(showService.searchShowsByFilter(filter, pageable))
 }
