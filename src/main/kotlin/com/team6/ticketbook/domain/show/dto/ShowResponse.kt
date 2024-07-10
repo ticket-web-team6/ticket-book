@@ -2,6 +2,7 @@ package com.team6.ticketbook.domain.show.dto
 
 import com.team6.ticketbook.domain.place.dto.PlaceResponse
 import com.team6.ticketbook.domain.show.model.Show
+import java.io.Serializable
 import java.time.LocalDate
 
 data class ShowResponse(
@@ -18,7 +19,7 @@ data class ShowResponse(
     val info: String,
     val category: String,
     val place: PlaceResponse
-) {
+) :Serializable {
     companion object {
         fun from(show: Show): ShowResponse {
             return ShowResponse(

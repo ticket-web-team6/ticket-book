@@ -27,7 +27,7 @@ class SecurityConfig(
                     "/auth/login",
                     "/auth/register",
                     "/shows/all",
-                    "/shows/search"
+                    "/shows/search/**",
                 )
                     .permitAll()
                     .anyRequest().authenticated()
