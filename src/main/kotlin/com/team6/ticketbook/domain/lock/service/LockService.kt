@@ -2,16 +2,21 @@ package com.team6.ticketbook.domain.lock.service
 
 import com.team6.ticketbook.domain.lock.model.LockData
 import com.team6.ticketbook.domain.lock.repository.LockRepository
+import org.redisson.api.RLock
+import org.redisson.api.RedissonClient
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 @Service
 class LockService(
     private val lockRepository: LockRepository,
-    private val redisTemplate: RedisTemplate<String, String>
+    private val redisTemplate: RedisTemplate<String, String>,
+    private val redissonClient: RedissonClient
 ) {
+
     private final val timeToLiveMilliseconds = 10000L
 
     @Transactional
@@ -30,7 +35,6 @@ class LockService(
     }
 
     fun redisLock(key: String): Boolean {
-        println("Acquired Lock")
         return redisTemplate.opsForValue()
             .setIfAbsent(key, "lock", Duration.ofMillis(timeToLiveMilliseconds))
             ?: false
@@ -50,6 +54,20 @@ class LockService(
         return kotlin.runCatching { func.invoke() }
             .onSuccess { redisUnlock(lockKey) }
             .onFailure { redisUnlock(lockKey) }
+            .getOrThrow()
+    }
+
+    fun <T> runExclusiveWithRedissonLock(lockKey: String, func: () -> T): T {
+
+        val lock: RLock = redissonClient.getFairLock(lockKey)
+
+        return kotlin.runCatching {
+            if (lock.tryLock(20, (timeToLiveMilliseconds / 1000), TimeUnit.SECONDS))
+                func.invoke()
+            else throw RuntimeException("Request timed out")
+        }
+            .onSuccess { lock.unlock() }
+            .onFailure { lock.unlock() }
             .getOrThrow()
     }
 }

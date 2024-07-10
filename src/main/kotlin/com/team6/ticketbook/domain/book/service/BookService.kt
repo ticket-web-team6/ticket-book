@@ -70,6 +70,14 @@ class BookService(
     }
 
     @Transactional
+    fun createBookWithRedissonLock(memberId: Long, request: CreateBookRequest): BookResponse =
+        createLockKeyWithBookRequest(request).let { key ->
+            lockService.runExclusiveWithRedissonLock(key) {
+                createBook(memberId, request)
+            }
+        }
+
+    @Transactional
     fun deleteBookById(memberId: Long, bookId: Long) {
         val book = bookRepository.findByIdOrNull(bookId) ?: throw ModelNotFoundException("book", bookId)
         if (book.memberId != memberId) throw InvalidCredentialException()

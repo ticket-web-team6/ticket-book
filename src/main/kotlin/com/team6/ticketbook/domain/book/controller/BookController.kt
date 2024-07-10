@@ -49,6 +49,14 @@ class BookController(
         .status(HttpStatus.CREATED)
         .body(bookService.createBookWithJpaLock(member.id, request))
 
+    @PostMapping("/v4")
+    fun createBookWithRedissonLock(
+        @RequestBody request: CreateBookRequest,
+        @AuthenticationPrincipal member: MemberPrincipal
+    ): ResponseEntity<BookResponse> = ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(bookService.createBookWithRedissonLock(member.id, request))
+
     @DeleteMapping("/{bookId}")
     fun deleteBookById(
         @PathVariable bookId: Long,
