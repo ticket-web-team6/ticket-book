@@ -33,11 +33,11 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.12.3")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
+    implementation("org.redisson:redisson-spring-boot-starter:3.27.0")
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client") // Should be removed when returning back to mysql
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
