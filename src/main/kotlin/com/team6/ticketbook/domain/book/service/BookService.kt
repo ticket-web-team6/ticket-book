@@ -61,10 +61,11 @@ class BookService(
 
     @Transactional
     fun createBookWithJpaLock(memberId: Long, request: CreateBookRequest): BookResponse {
-        createLockKeyWithBookRequest(request).let {
+        val lock = createLockKeyWithBookRequest(request).let {
             lockService.jpaLock(it)
         }
         val bookResponse = createBook(memberId, request)
+        lockService.deleteLock(lock)
         return bookResponse
     }
 
